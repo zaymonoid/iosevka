@@ -10,6 +10,21 @@ final class iosevkaTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
+  func testInverseRotationUndoesRotation() {
+    let size = 4
+    for rotation in [RotationAngle.degrees0, .degrees90, .degrees180, .degrees270] {
+      for row in 0..<size {
+        for col in 0..<size {
+          let coordinate = BoardCoordinate(row: row, col: col)
+          let roundTrip = coordinate
+            .withRotation(of: rotation, inMatrixOfSize: size)
+            .withRotation(of: inverseRotation(of: rotation), inMatrixOfSize: size)
+          XCTAssertEqual(roundTrip, coordinate, "\(rotation)")
+        }
+      }
+    }
+  }
+
   func testExample() throws {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.

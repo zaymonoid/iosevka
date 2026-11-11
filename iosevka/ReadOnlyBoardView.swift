@@ -42,6 +42,10 @@ struct ReadOnlyBoardView: View {
           }
         }
       }
+      .background {
+        TilePath(cells: selected, gridSize: gameBoard.size)
+          .trail(Theme.accent, cellSize: cellSize)
+      }
     }
     .aspectRatio(1, contentMode: .fit)
     .animation(.default.speed(2), value: selected)

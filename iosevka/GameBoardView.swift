@@ -54,6 +54,12 @@ struct GameBoardView: View {
           }
         }
       }
+      .background {
+        let path = flashingLetters.isEmpty ? selected : flashingLetters
+        TilePath(cells: path.map { displayPosition(of: $0) }, gridSize: gameBoard.size)
+          .trail(flashingLetters.isEmpty ? Theme.accent : submissionResultToColor(flashType),
+                 cellSize: cellSize)
+      }
       .contentShape(Rectangle())
       .onAppear { swipeState.send(.appear(geometry.size)) }
       .gesture(
@@ -83,6 +89,13 @@ struct GameBoardView: View {
         })
       }.joined(separator: ", ")
     )
+  }
+}
+
+extension GameBoardView {
+  /// Where a board cell is drawn, given the board's rotation.
+  func displayPosition(of coordinate: BoardCoordinate) -> BoardCoordinate {
+    coordinate.withRotation(of: inverseRotation(of: rotation), inMatrixOfSize: gameBoard.size)
   }
 }
 

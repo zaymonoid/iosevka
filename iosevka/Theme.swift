@@ -83,6 +83,36 @@ struct TileFace: View {
   }
 }
 
+/// A line through the centres of `cells`, in order, on a square grid of
+/// `gridSize` cells a side. The boards draw it behind the tiles, so it only
+/// shows in the gaps, linking the tiles of a word in order.
+struct TilePath: Shape {
+  let cells: [BoardCoordinate]
+  let gridSize: Int
+
+  func path(in rect: CGRect) -> Path {
+    let cell = rect.width / CGFloat(gridSize)
+    var path = Path()
+    path.addLines(cells.map { coordinate in
+      CGPoint(x: rect.minX + (CGFloat(coordinate.col) + 0.5) * cell,
+              y: rect.minY + (CGFloat(coordinate.row) + 0.5) * cell)
+    })
+    return path
+  }
+}
+
+extension TilePath {
+  /// The path a shade darker than `color`, the fill of the tiles it links, so
+  /// it stands apart from them where it shows between tiles.
+  func trail(_ color: Color, cellSize: CGFloat) -> some View {
+    let style = StrokeStyle(lineWidth: cellSize * 0.12, lineCap: .round, lineJoin: .round)
+    return ZStack {
+      stroke(color, style: style)
+      stroke(Color.black.opacity(0.2), style: style)
+    }
+  }
+}
+
 /// Small uppercase label above a large rounded number.
 struct StatView: View {
   let label: String
