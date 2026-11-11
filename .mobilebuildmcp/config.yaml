@@ -1,0 +1,7 @@
+schemaVersion: 1
+sessionDefaults:
+  projectPath: ./iosevka.xcodeproj
+  scheme: iosevka
+  configuration: Debug
+  simulatorName: iPhone 17 Pro
+  bundleId: zantonio.iosevka
