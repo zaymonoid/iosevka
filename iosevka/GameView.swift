@@ -234,6 +234,8 @@ struct PlayingView: View {
         .padding(1)
         .background(Theme.tray)
         .layoutPriority(1)
+        .gameHaptics(selectedCount: store.state.selectedCells.count,
+                     lastSubmission: store.state.lastSubmission)
 
         Button(action: { store.send(.rotateBoard) }) {
           Image(systemName: "rotate.right")

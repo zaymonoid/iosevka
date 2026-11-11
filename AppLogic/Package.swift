@@ -20,7 +20,7 @@ let package = Package(
       dependencies: ["ObservableStore"],
       exclude: [
         "Assets.xcassets", "ContentView.swift", "FadeIn.swift", "GameBoardView.swift",
-        "GameView.swift", "MenuView.swift", "Preview Content", "ReadOnlyBoardView.swift",
+        "GameView.swift", "Haptics.swift", "MenuView.swift", "Preview Content", "ReadOnlyBoardView.swift",
         "SwipeState.swift", "Theme.swift", "dictionary.txt", "iosevkaApp.swift",
       ],
       sources: [
