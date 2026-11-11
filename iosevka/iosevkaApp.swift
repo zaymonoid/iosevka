@@ -11,13 +11,12 @@ enum AppState {
   case game
 }
 
-struct AppEnvironment {}
-
 @main
 struct iosevkaApp: App {
   var body: some Scene {
     WindowGroup {
       AppView()
+        .tint(Theme.accent)
     }
   }
 }
@@ -36,7 +35,7 @@ struct AppView: View {
     switch appState {
     case .mainMenu: MenuView(dispatch: dispatch).fadeIn()
     case .game:
-      VStack { GameView(dispatch: dispatch) }.fadeIn()
+      GameView(dispatch: dispatch).fadeIn()
     }
   }
 }

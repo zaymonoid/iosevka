@@ -3,14 +3,6 @@ import Foundation
 import ObservableStore
 import SwiftUI
 
-func submissionResultToColor(_ result: SubmissionResult) -> Color {
-  switch result {
-    case .invalid: return Color.red
-    case .duplicate: return Color.yellow
-    case .valid: return Color.green
-  }
-}
-
 struct GameBoardView: View {
   let gameBoard: GameBoard
   let selected: [BoardCoordinate]
@@ -39,7 +31,11 @@ struct GameBoardView: View {
   }
 
   var body: some View {
+    // The gesture maps touches to cells by dividing the grid evenly, so every
+    // cell keeps an equal frame; the gap between tiles is drawn inside it.
     GeometryReader { geometry in
+      let cellSize = geometry.size.width / CGFloat(gameBoard.size)
+
       VStack(spacing: 0) {
         ForEach(gameBoard.letters.indices, id: \.self) { row in
           HStack(spacing: 0) {
@@ -52,14 +48,14 @@ struct GameBoardView: View {
                        selected: selected.contains(coord),
                        flashing: flashingLetters.contains(coord),
                        flashType: flashType)
-                .frame(width: geometry.size.width / CGFloat(gameBoard.size),
-                       height: geometry.size.height / CGFloat(gameBoard.size))
+                .padding(1)
+                .frame(width: cellSize, height: cellSize)
             }
           }
         }
       }
+      .contentShape(Rectangle())
       .onAppear { swipeState.send(.appear(geometry.size)) }
-      .border(Color.accentColor, width: 0.5) // Add an external border
       .gesture(
         DragGesture()
           .onChanged { value in
@@ -75,8 +71,18 @@ struct GameBoardView: View {
           }
       )
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
     .aspectRatio(1, contentMode: .fit)
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("Letter board")
+    .accessibilityValue(
+      (0..<gameBoard.size).map { row in
+        String((0..<gameBoard.size).map { col in
+          let coord = BoardCoordinate(row: row, col: col)
+            .withRotation(of: rotation, inMatrixOfSize: gameBoard.size)
+          return gameBoard.letters[coord.row][coord.col]
+        })
+      }.joined(separator: ", ")
+    )
   }
 }
 
@@ -86,28 +92,19 @@ struct CellView: View {
   let flashing: Bool
   let flashType: SubmissionResult
 
-  func backgroundColor(selected: Bool, flashing: Bool, flashType: SubmissionResult) -> Color {
-    if flashing {
-      return submissionResultToColor(flashType)
-    } else if selected {
-      return Color.accentColor.opacity(0.2)
-    } else {
-      return Color.white
-    }
+  var fill: Color {
+    if flashing { return submissionResultToColor(flashType) }
+    if selected { return Theme.accent }
+    return Theme.tile
   }
 
   var body: some View {
-    GeometryReader { _ in
-      Text(String(letter))
-        .font(.title)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .overlay(
-          Rectangle()
-            .stroke(Color.accentColor, lineWidth: 0.5)
-            .padding(.top, 0.5)
-            .padding(.leading, 0.5)
-        )
-        .background(backgroundColor(selected: selected, flashing: flashing, flashType: flashType))
-    }
+    TileFace(
+      letter: letter,
+      fill: fill,
+      foreground: flashing || selected ? Theme.onAccent : Theme.ink,
+      lifted: false,
+      rounding: 0.06
+    )
   }
 }

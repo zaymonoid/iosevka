@@ -2,6 +2,8 @@ import Combine
 import Foundation
 import ObservableStore
 
+struct AppEnvironment {}
+
 // -- Domain ------------------------------------------------------------------
 private let wordPoints: [Int: Int] = [
   3: 1, 4: 1, 5: 2,
@@ -30,12 +32,17 @@ enum SubmissionResult {
   case valid
 }
 
+struct Submission: Equatable {
+  let word: String
+  let result: SubmissionResult
+}
+
 enum GameAction: Equatable {
   case appear
   case selectLetter(position: BoardCoordinate)
   case submitWord
   case rotateBoard
-  case tickTimer(_ remainingTime: Int)
+  case tickTimer(_ remainingTime: Int, gameId: UUID?)
   case flashLetters(for: SubmissionResult, letters: [BoardCoordinate])
   case clearFlashedLetters
   case gameOver
@@ -67,6 +74,7 @@ struct GameState: ModelProtocol {
 
   var flashingLetters: [BoardCoordinate] = []
   var flashType = SubmissionResult.invalid
+  var lastSubmission: Submission?
 
   static func update(
     state: GameState,
@@ -100,9 +108,11 @@ struct GameState: ModelProtocol {
 
       draft.possibleScore = calculatePossibleScore(draft.wordLookup)
       draft.score = 0
+      draft.lastSubmission = nil
+      draft.flashingLetters = []
 
       // Start the timer ticking
-      return update(state: draft, action: .tickTimer(timeLimit), environment: environment)
+      return update(state: draft, action: .tickTimer(timeLimit, gameId: draft.gameId), environment: environment)
 
     case let .selectLetter(position):
       var draft = state
@@ -134,17 +144,18 @@ struct GameState: ModelProtocol {
         word + String(draft.gameBoard![position]!)
       }
 
+      let result: SubmissionResult
       if draft.foundWords.contains(word) {
-        actions.append(.flashLetters(for: .duplicate, letters: draft.selectedCells))
-
+        result = .duplicate
       } else if !draft.wordLookup.contains(word) {
-        actions.append(.flashLetters(for: .invalid, letters: draft.selectedCells))
-
+        result = .invalid
       } else {
+        result = .valid
         draft.foundWords.append(word)
         draft.score += wordPoints[word.count] ?? 0
-        actions.append(.flashLetters(for: .valid, letters: draft.selectedCells))
       }
+      actions.append(.flashLetters(for: result, letters: draft.selectedCells))
+      draft.lastSubmission = Submission(word: word, result: result)
 
       draft.selectedCells = []
       draft.selection = []
@@ -160,7 +171,7 @@ struct GameState: ModelProtocol {
       let fx: Fx<GameAction> = Future.detached {
         try await Task.sleep(nanoseconds: 1000000000 / 9)
         return GameAction.clearFlashedLetters
-      }.catch { _ in Just(GameAction.appear) }.eraseToAnyPublisher()
+      }.catch { _ in Empty() }.eraseToAnyPublisher()
 
       return Update(state: draft, fx: fx).animation(.default.speed(5))
 
@@ -180,7 +191,11 @@ struct GameState: ModelProtocol {
 
       return Update(state: draft)
 
-    case let .tickTimer(timeRemaining):
+    case let .tickTimer(timeRemaining, gameId):
+      // Each game runs its own tick chain; drop ticks from an earlier game.
+      guard gameId == state.gameId, state.stateOfTheGame == .playing
+      else { return Update(state: state) }
+
       var draft = state
 
       draft.timeRemaining = timeRemaining
@@ -192,8 +207,8 @@ struct GameState: ModelProtocol {
         let fx: Fx<GameAction> = Future.detached {
           try await Task.sleep(nanoseconds: 1000000000)
 
-          return .tickTimer(draft.timeRemaining - 1)
-        }.catch { _ in Just(GameAction.appear) }.eraseToAnyPublisher()
+          return .tickTimer(draft.timeRemaining - 1, gameId: draft.gameId)
+        }.catch { _ in Empty() }.eraseToAnyPublisher()
 
         return Update(state: draft, fx: fx)
       }

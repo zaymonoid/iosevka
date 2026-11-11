@@ -3,6 +3,19 @@
 iosevka is a SwiftUI iOS word game (`iosevka.xcodeproj`, scheme `iosevka`,
 bundle ID `zantonio.iosevka`).
 
+## Tests
+
+- `cd AppLogic && swift test`: the game logic and unit tests on macOS, no
+  simulator (~1.5 s warm). Use this while iterating.
+  `AppLogic/` is a SwiftPM package that symlinks `iosevka/` and `iosevkaTests/`
+  and builds only the logic files listed in its `sources` (as module `iosevka`).
+  Those files must import only Foundation, Combine and ObservableStore; add new
+  logic files to `sources` and new app-only files to `exclude`.
+- `npx -y mobilebuildmcp@2.7.1 simulator test`: everything, including UI tests,
+  on the simulator. Run before handing off.
+
+The app is portrait only, on iPhone and iPad.
+
 ## Simulator verification
 
 Use MobileBuildMCP (formerly XcodeBuildMCP), pinned to `mobilebuildmcp@2.7.1`
@@ -31,6 +44,9 @@ Tips:
   accessibility tree.
 - `type_text` rejects newlines; submit with `key_press` (Return = 40).
 - Look at screenshots, in light and dark, before calling visual work done.
+- Tests run serially on the one simulator (`parallelizable = "NO"` in the
+  shared scheme). Keep it that way: parallel testing boots a clone of the
+  simulator per worker and eats the machine.
 - When several agents work at once, give each its own simulator and keep all
   simulator activity (installs, launches, tests) on your own device. Never reset
   or erase a shared simulator.
