@@ -344,6 +344,7 @@ struct SummaryView: View {
   enum Tab: Hashable { case found, missed }
 
   @ObservedObject var store: Store<GameState>
+  var isDuel = false
   var dispatch: (AppAction) -> Void
 
   let foundWords: [String]
@@ -352,8 +353,9 @@ struct SummaryView: View {
   @State var selected: [BoardCoordinate] = []
   @State var tab: Tab
 
-  init(store: Store<GameState>, dispatch: @escaping (AppAction) -> Void) {
+  init(store: Store<GameState>, isDuel: Bool = false, dispatch: @escaping (AppAction) -> Void) {
     self.store = store
+    self.isDuel = isDuel
     self.dispatch = dispatch
     self.foundWords = byScoreThenAlphabet(store.state.foundWords)
     self.remainingWords = byScoreThenAlphabet(store.state.wordLookup.subtracting(store.state.foundWords))
@@ -451,8 +453,14 @@ struct SummaryView: View {
       HStack(spacing: 12) {
         Button("Menu") { dispatch(.mainMenu) }
           .buttonStyle(SecondaryButtonStyle())
-        Button("Play Again") { store.send(GameAction.appear) }
-          .buttonStyle(PrimaryButtonStyle())
+        if isDuel {
+          // Whoever taps Rematch hosts the next board.
+          Button("Rematch") { dispatch(.hostDuel) }
+            .buttonStyle(PrimaryButtonStyle())
+        } else {
+          Button("Play Again") { store.send(GameAction.appear) }
+            .buttonStyle(PrimaryButtonStyle())
+        }
       }
     }
     .padding(.horizontal, 16)
@@ -472,6 +480,8 @@ struct GameView: View {
 
   /// The board to start on, e.g. a duel's; nil makes a new one.
   var board: GameBoard?
+  /// A duel ends with Rematch instead of Play Again.
+  var isDuel = false
   var dispatch: (AppAction) -> Void
   /// Called with the final state each time a game ends.
   var onGameOver: (GameState) -> Void = { _ in }
@@ -482,7 +492,7 @@ struct GameView: View {
       case .playing:
         PlayingView(store: store).fadeIn()
       case .summary:
-        SummaryView(store: store, dispatch: dispatch).fadeIn()
+        SummaryView(store: store, isDuel: isDuel, dispatch: dispatch).fadeIn()
       }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

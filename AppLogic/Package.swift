@@ -19,13 +19,15 @@ let package = Package(
       name: "iosevka",
       dependencies: ["ObservableStore"],
       exclude: [
-        "Assets.xcassets", "ContentView.swift", "FadeIn.swift", "GameBoardView.swift",
-        "GameView.swift", "Haptics.swift", "MenuView.swift", "Preview Content", "ReadOnlyBoardView.swift",
+        "Assets.xcassets", "ContentView.swift", "DuelReadyView.swift", "FadeIn.swift",
+        "GameBoardView.swift", "GameView.swift", "Haptics.swift", "Info.plist",
+        "InviteScannerView.swift", "MenuView.swift", "Preview Content", "ReadOnlyBoardView.swift",
         "SwipeState.swift", "Theme.swift", "iosevkaApp.swift",
       ],
       sources: [
         "BoardGeneration.swift",
         "Daily.swift",
+        "Duel.swift",
         "GameBoard.swift",
         "GameState.swift",
         "Math.swift",

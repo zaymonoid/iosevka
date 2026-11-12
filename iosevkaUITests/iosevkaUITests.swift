@@ -30,6 +30,62 @@ final class iosevkaUITests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
+    /// Scanning an invite abandons a solo game in progress, holds the board
+    /// back until Start, then plays exactly the invited board.
+    func testOpeningADuelInvite() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["Single Player"].tap()
+        let board = app.otherElements["Letter board"]
+        XCTAssertTrue(board.waitForExistence(timeout: 5))
+
+        app.open(URL(string: "iosevka://duel?v=1&b=TESNARLOIDHCUMWF")!)
+
+        XCTAssertTrue(app.staticTexts["Get ready"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.otherElements["Hidden board"].exists)
+        XCTAssertFalse(board.exists)
+
+        app.buttons["Start"].tap()
+
+        XCTAssertTrue(board.waitForExistence(timeout: 5))
+        XCTAssertEqual(board.value as? String, "TESN, ARLO, IDHC, UMWF")
+    }
+
+    /// Hosting shows an invite code, then the ready screen; Start plays the
+    /// board in that invite.
+    func testHostingADuel() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["Head to Head"].tap()
+
+        XCTAssertTrue(app.staticTexts["Scan to join"].waitForExistence(timeout: 5))
+        let code = app.otherElements["Invite code"]
+        XCTAssertTrue(code.exists)
+        let url = try XCTUnwrap(URLComponents(string: try XCTUnwrap(code.value as? String)))
+        let letters = try XCTUnwrap(url.queryItems?.first { $0.name == "b" }?.value)
+
+        // The simulator has no camera to scan with, so the sheet says so.
+        app.buttons["Scan a friend's code instead"].tap()
+        XCTAssertTrue(app.navigationBars["Scan a friend's code"].waitForExistence(timeout: 5))
+        app.navigationBars.buttons["Cancel"].tap()
+        XCTAssertTrue(app.staticTexts["Scan to join"].waitForExistence(timeout: 5))
+
+        // Ready shows the same face-down board the guest sees.
+        app.buttons["Ready"].tap()
+        XCTAssertTrue(app.staticTexts["Get ready"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.otherElements["Hidden board"].exists)
+        app.buttons["Start"].tap()
+
+        let board = app.otherElements["Letter board"]
+        XCTAssertTrue(board.waitForExistence(timeout: 5))
+        let rows = stride(from: 0, to: letters.count, by: 4).map {
+            String(Array(letters)[$0..<$0 + 4])
+        }
+        XCTAssertEqual(board.value as? String, rows.joined(separator: ", "))
+    }
+
     /// End game asks first, then shows the summary.
     func testEndingAGameEarly() throws {
         let app = XCUIApplication()

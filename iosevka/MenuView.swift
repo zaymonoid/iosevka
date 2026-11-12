@@ -53,9 +53,13 @@ struct MenuView: View {
         )
       }
 
-      Button("Single Player") { dispatch(.newGame) }
-        .buttonStyle(SecondaryButtonStyle())
-        .padding(.top, 12)
+      HStack(spacing: 12) {
+        Button("Single Player") { dispatch(.newGame) }
+          .buttonStyle(SecondaryButtonStyle())
+        Button("Head to Head") { dispatch(.hostDuel) }
+          .buttonStyle(SecondaryButtonStyle())
+      }
+      .padding(.top, 12)
 
       Button("How to play") { showingRules = true }
         .font(.system(.subheadline, design: .rounded).weight(.semibold))

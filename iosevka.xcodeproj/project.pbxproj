@@ -26,7 +26,11 @@
 		C899EB8E2AD74A3C00378B32 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C899EB8D2AD74A3C00378B32 /* MenuView.swift */; };
 		C899EB902AD74E8800378B32 /* FadeIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = C899EB8F2AD74E8800378B32 /* FadeIn.swift */; };
 		A1B2C3D4E5F60718293A4B5C /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5D /* Haptics.swift */; };
+		D0E1A0000000000000000007 /* DuelReadyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E1A0000000000000000008 /* DuelReadyView.swift */; };
+		D0E1A0000000000000000009 /* InviteScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E1A000000000000000000A /* InviteScannerView.swift */; };
+		D0E1A0000000000000000001 /* Duel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E1A0000000000000000002 /* Duel.swift */; };
 		DA1A00000000000000000001 /* Daily.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1A00000000000000000002 /* Daily.swift */; };
+		D0E1A0000000000000000003 /* DuelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E1A0000000000000000004 /* DuelTests.swift */; };
 		DA1A00000000000000000003 /* DailyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1A00000000000000000004 /* DailyTests.swift */; };
 		C8A64EBC2AD372D900F1617E /* dictionary.txt in Resources */ = {isa = PBXBuildFile; fileRef = C8A64EBB2AD372D900F1617E /* dictionary.txt */; };
 		C8BE94A82AF1FD9000C0303D /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BE94A72AF1FD9000C0303D /* Math.swift */; };
@@ -74,7 +78,12 @@
 		C899EB8D2AD74A3C00378B32 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		C899EB8F2AD74E8800378B32 /* FadeIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeIn.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B5D /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		D0E1A0000000000000000006 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D0E1A0000000000000000008 /* DuelReadyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuelReadyView.swift; sourceTree = "<group>"; };
+		D0E1A000000000000000000A /* InviteScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteScannerView.swift; sourceTree = "<group>"; };
+		D0E1A0000000000000000002 /* Duel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duel.swift; sourceTree = "<group>"; };
 		DA1A00000000000000000002 /* Daily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Daily.swift; sourceTree = "<group>"; };
+		D0E1A0000000000000000004 /* DuelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuelTests.swift; sourceTree = "<group>"; };
 		DA1A00000000000000000004 /* DailyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTests.swift; sourceTree = "<group>"; };
 		C8A64EBB2AD372D900F1617E /* dictionary.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dictionary.txt; sourceTree = "<group>"; };
 		C8BE94A72AF1FD9000C0303D /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
@@ -147,7 +156,11 @@
 				C8A1E0012F00000000000001 /* Theme.swift */,
 				C899EB8F2AD74E8800378B32 /* FadeIn.swift */,
 				A1B2C3D4E5F60718293A4B5D /* Haptics.swift */,
+				D0E1A0000000000000000002 /* Duel.swift */,
 				DA1A00000000000000000002 /* Daily.swift */,
+				D0E1A0000000000000000008 /* DuelReadyView.swift */,
+				D0E1A000000000000000000A /* InviteScannerView.swift */,
+				D0E1A0000000000000000006 /* Info.plist */,
 				C88ABDCB2AD9C5F700FF82C5 /* ReadOnlyBoardView.swift */,
 				C8E846BD2AE1F63A000621CD /* BoardGeneration.swift */,
 				C8D2CD132AE3384E0096D7F2 /* Rotation.swift */,
@@ -169,6 +182,7 @@
 			children = (
 				C8450D6C2ACF692B00A1E582 /* iosevkaTests.swift */,
 				C8450D8B2ACF6DF600A1E582 /* TrieTests.swift */,
+				D0E1A0000000000000000004 /* DuelTests.swift */,
 				DA1A00000000000000000004 /* DailyTests.swift */,
 			);
 			path = iosevkaTests;
@@ -336,7 +350,10 @@
 				C8450D5C2ACF692900A1E582 /* iosevkaApp.swift in Sources */,
 				C899EB902AD74E8800378B32 /* FadeIn.swift in Sources */,
 				A1B2C3D4E5F60718293A4B5C /* Haptics.swift in Sources */,
+				D0E1A0000000000000000001 /* Duel.swift in Sources */,
 				DA1A00000000000000000001 /* Daily.swift in Sources */,
+				D0E1A0000000000000000007 /* DuelReadyView.swift in Sources */,
+				D0E1A0000000000000000009 /* InviteScannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +363,7 @@
 			files = (
 				C8450D6D2ACF692B00A1E582 /* iosevkaTests.swift in Sources */,
 				C8450D8C2ACF6DF600A1E582 /* TrieTests.swift in Sources */,
+				D0E1A0000000000000000003 /* DuelTests.swift in Sources */,
 				DA1A00000000000000000003 /* DailyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,6 +520,7 @@
 				DEVELOPMENT_TEAM = 5H9U82Q57P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosevka/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -532,6 +551,7 @@
 				DEVELOPMENT_TEAM = 5H9U82Q57P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosevka/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
