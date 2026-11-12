@@ -30,6 +30,24 @@ final class iosevkaUITests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
+    /// End game asks first, then shows the summary.
+    func testEndingAGameEarly() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["Single Player"].tap()
+        XCTAssertTrue(app.otherElements["Letter board"].waitForExistence(timeout: 5))
+
+        app.buttons["End game"].tap()
+        XCTAssertTrue(app.buttons["End Game"].waitForExistence(timeout: 5))
+        app.buttons["End Game"].tap()
+
+        XCTAssertTrue(app.buttons["Menu"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["Rotate board"].exists)
+        app.buttons["Menu"].tap()
+        XCTAssertTrue(app.buttons["Single Player"].waitForExistence(timeout: 5))
+    }
+
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
             // This measures how long it takes to launch your application.

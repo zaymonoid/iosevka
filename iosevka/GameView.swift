@@ -208,6 +208,7 @@ struct FoundWordsView: View {
 
 struct PlayingView: View {
   @ObservedObject var store: Store<GameState>
+  @State private var confirmingEnd = false
 
   var body: some View {
     VStack(spacing: 8) {
@@ -237,21 +238,44 @@ struct PlayingView: View {
         .gameHaptics(selectedCount: store.state.selectedCells.count,
                      lastSubmission: store.state.lastSubmission)
 
-        Button(action: { store.send(.rotateBoard) }) {
-          Image(systemName: "rotate.right")
-            .font(.system(size: 20, weight: .semibold))
+        HStack {
+          RoundIconButton(systemName: "rectangle.portrait.and.arrow.right", label: "End game") { confirmingEnd = true }
+            // Ending early goes to the summary, like running out of time, so a
+            // daily board still counts as your go and a duel offers a rematch.
+            .confirmationDialog("End this game?", isPresented: $confirmingEnd, titleVisibility: .visible) {
+              Button("End Game", role: .destructive) { store.send(.gameOver) }
+              Button("Keep Playing", role: .cancel) {}
+            } message: {
+              Text("The words you've found so far will count.")
+            }
+          Spacer()
+          RoundIconButton(systemName: "rotate.right", label: "Rotate board") { store.send(.rotateBoard) }
             .symbolEffect(.bounce.down.byLayer, options: .speed(5), value: store.state.rotation)
-            .foregroundStyle(Theme.ink)
-            .frame(width: 52, height: 52)
-            .background(Theme.surface, in: Circle())
-            .overlay(Circle().strokeBorder(Theme.hairline, lineWidth: 1))
         }
-        .accessibilityLabel("Rotate board")
+        .padding(.horizontal, 16)
         .padding(.top, 6)
       }
     }
     .padding(.bottom, 4)
     .frame(maxWidth: 600)
+  }
+}
+
+private struct RoundIconButton: View {
+  let systemName: String
+  let label: String
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      Image(systemName: systemName)
+        .font(.system(size: 20, weight: .semibold))
+        .foregroundStyle(Theme.ink)
+        .frame(width: 52, height: 52)
+        .background(Theme.surface, in: Circle())
+        .overlay(Circle().strokeBorder(Theme.hairline, lineWidth: 1))
+    }
+    .accessibilityLabel(label)
   }
 }
 
