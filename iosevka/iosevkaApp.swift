@@ -6,12 +6,12 @@ enum AppAction {
   case newGame
   case playDaily(DailyDay)
   case mainMenu
-  /// Make a board and show its invite for a friend to scan.
+  /// Start a match and show its invite for a friend to scan.
   case hostDuel
-  /// Go to the ready screen: the guest scanned the host's code, or the host
-  /// tapped Ready once the guest had it.
-  case getReady(DuelInvite)
-  case startDuel(DuelInvite)
+  /// Go to the ready screen for a round: the guest scanned the host's code,
+  /// the host tapped Ready once the guest had it, or a player tapped Rematch.
+  case getReady(DuelRound)
+  case startDuel(DuelRound)
 }
 
 enum AppState {
@@ -20,9 +20,9 @@ enum AppState {
   case daily(DailyDay, GameBoard)
   /// The host shows the invite as a QR code for the guest to scan.
   case duelInvite(DuelInvite)
-  /// Both players have the board, hidden until they tap Start together.
-  case duelReady(DuelInvite)
-  case duel(DuelInvite)
+  /// Both players have the round's board, hidden until they tap Start together.
+  case duelReady(DuelRound)
+  case duel(DuelRound, GameBoard)
 }
 
 @main
@@ -44,12 +44,10 @@ struct AppView: View {
     case .newGame: appState = AppState.game
     case .mainMenu: appState = AppState.mainMenu
     case let .playDaily(day): appState = .daily(day, Daily.board(for: day))
-    case .hostDuel:
-      let (board, _) = mkGameBoard(size: boardSize)
-      appState = .duelInvite(DuelInvite(board: board))
+    case .hostDuel: appState = .duelInvite(.random())
     // A scanned invite abandons whatever was on screen, even a game in progress.
-    case let .getReady(invite): appState = .duelReady(invite)
-    case let .startDuel(invite): appState = .duel(invite)
+    case let .getReady(round): appState = .duelReady(round)
+    case let .startDuel(round): appState = .duel(round, round.board)
     }
   }
 
@@ -68,14 +66,15 @@ struct AppView: View {
         .fadeIn()
       case let .duelInvite(invite):
         DuelInviteView(invite: invite, dispatch: dispatch).fadeIn()
-      case let .duelReady(invite):
-        DuelReadyView(invite: invite, dispatch: dispatch).fadeIn()
-      case let .duel(invite):
-        GameView(board: invite.board, isDuel: true, dispatch: dispatch).fadeIn()
+      case let .duelReady(round):
+        DuelReadyView(round: round, dispatch: dispatch).fadeIn()
+      case let .duel(round, board):
+        GameView(board: board, rematch: { dispatch(.getReady(round.next)) }, dispatch: dispatch)
+          .fadeIn()
       }
     }
     .onOpenURL { url in
-      if let invite = DuelInvite(url: url) { dispatch(.getReady(invite)) }
+      if let invite = DuelInvite(url: url) { dispatch(.getReady(DuelRound(firstOf: invite))) }
     }
   }
 }

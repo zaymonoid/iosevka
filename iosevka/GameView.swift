@@ -344,7 +344,7 @@ struct SummaryView: View {
   enum Tab: Hashable { case found, missed }
 
   @ObservedObject var store: Store<GameState>
-  var isDuel = false
+  var rematch: (() -> Void)?
   var dispatch: (AppAction) -> Void
 
   let foundWords: [String]
@@ -353,9 +353,9 @@ struct SummaryView: View {
   @State var selected: [BoardCoordinate] = []
   @State var tab: Tab
 
-  init(store: Store<GameState>, isDuel: Bool = false, dispatch: @escaping (AppAction) -> Void) {
+  init(store: Store<GameState>, rematch: (() -> Void)? = nil, dispatch: @escaping (AppAction) -> Void) {
     self.store = store
-    self.isDuel = isDuel
+    self.rematch = rematch
     self.dispatch = dispatch
     self.foundWords = byScoreThenAlphabet(store.state.foundWords)
     self.remainingWords = byScoreThenAlphabet(store.state.wordLookup.subtracting(store.state.foundWords))
@@ -453,9 +453,9 @@ struct SummaryView: View {
       HStack(spacing: 12) {
         Button("Menu") { dispatch(.mainMenu) }
           .buttonStyle(SecondaryButtonStyle())
-        if isDuel {
-          // Whoever taps Rematch hosts the next board.
-          Button("Rematch") { dispatch(.hostDuel) }
+        if let rematch {
+          // Both players tap Rematch to move on to the match's next board.
+          Button("Rematch", action: rematch)
             .buttonStyle(PrimaryButtonStyle())
         } else {
           Button("Play Again") { store.send(GameAction.appear) }
@@ -480,8 +480,9 @@ struct GameView: View {
 
   /// The board to start on, e.g. a duel's; nil makes a new one.
   var board: GameBoard?
-  /// A duel ends with Rematch instead of Play Again.
-  var isDuel = false
+  /// In a duel, moves both players on to the next round; the summary offers
+  /// it instead of Play Again.
+  var rematch: (() -> Void)?
   var dispatch: (AppAction) -> Void
   /// Called with the final state each time a game ends.
   var onGameOver: (GameState) -> Void = { _ in }
@@ -492,7 +493,7 @@ struct GameView: View {
       case .playing:
         PlayingView(store: store).fadeIn()
       case .summary:
-        SummaryView(store: store, isDuel: isDuel, dispatch: dispatch).fadeIn()
+        SummaryView(store: store, rematch: rematch, dispatch: dispatch).fadeIn()
       }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -2,48 +2,53 @@
 import XCTest
 
 final class DuelTests: XCTestCase {
-  private let board = GameBoard(letters: [
-    ["T", "E", "S", "N"],
-    ["A", "R", "L", "O"],
-    ["I", "D", "H", "C"],
-    ["U", "M", "W", "F"],
-  ])
+  private let invite = DuelInvite(seed: 0x8F3A_21C0_7E5D_9B10)
 
-  func testInviteURLListsTheRowsInOrder() {
-    XCTAssertEqual(DuelInvite(board: board).url.absoluteString, "iosevka://duel?v=1&b=TESNARLOIDHCUMWF")
+  func testInviteURLCarriesTheSeedInHex() {
+    XCTAssertEqual(invite.url.absoluteString, "iosevka://duel?s=8F3A21C07E5D9B10")
   }
 
   func testInviteSurvivesTheRoundTrip() {
-    let invite = DuelInvite(board: board)
     XCTAssertEqual(DuelInvite(url: invite.url), invite)
+    let extremes = [DuelInvite(seed: 0), DuelInvite(seed: .max)]
+    for invite in extremes { XCTAssertEqual(DuelInvite(url: invite.url), invite) }
   }
 
-  func testLowercaseLettersAreAccepted() {
-    let url = URL(string: "iosevka://duel?v=1&b=tesnarloidhcumwf")!
-    XCTAssertEqual(DuelInvite(url: url)?.board, board)
+  func testLowercaseSeedsAreAccepted() {
+    XCTAssertEqual(DuelInvite(url: URL(string: "iosevka://duel?s=8f3a21c07e5d9b10")!), invite)
   }
 
   func testMalformedInvitesAreRejected() {
     let rejected = [
-      "https://duel?v=1&b=TESNARLOIDHCUMWF", // wrong scheme
-      "iosevka://game?v=1&b=TESNARLOIDHCUMWF", // wrong host
-      "iosevka://duel?v=2&b=TESNARLOIDHCUMWF", // unknown version
-      "iosevka://duel?b=TESNARLOIDHCUMWF", // no version
-      "iosevka://duel?v=1", // no board
-      "iosevka://duel?v=1&b=TESNARLOIDHCUMW", // too short
-      "iosevka://duel?v=1&b=TESNARLOIDHCUMWFX", // too long
-      "iosevka://duel?v=1&b=TESNARLOIDHCUMW1", // not a letter
-      "iosevka://duel?v=1&b=TESNARLOIDHCUMWÉ", // not A–Z
+      "https://duel?s=8F3A21C07E5D9B10", // wrong scheme
+      "iosevka://game?s=8F3A21C07E5D9B10", // wrong host
+      "iosevka://duel", // no seed
+      "iosevka://duel?s=XYZ", // not hex
+      "iosevka://duel?s=18F3A21C07E5D9B10", // more than 64 bits
     ]
     for string in rejected {
       XCTAssertNil(DuelInvite(url: URL(string: string)!), string)
     }
   }
 
-  /// Needs the app's dictionary, so it runs on the simulator, not in AppLogic.
-  func testPlayStartsAGameOnTheGivenBoard() throws {
-    try XCTSkipIf(Bundle.main.url(forResource: "dictionary", withExtension: "txt") == nil, "no dictionary")
+  func testBothPhonesGetTheSameBoardForARound() {
+    let guest = DuelInvite(url: invite.url)!
+    for round in 1...3 {
+      XCTAssertEqual(guest.board(round: round), invite.board(round: round), "round \(round)")
+    }
+  }
 
+  func testEachRoundGetsANewBoard() {
+    let boards = (1...5).map { invite.board(round: $0) }
+    XCTAssertEqual(Set(boards.map { $0.letters.joined().map(String.init).joined() }).count, 5)
+  }
+
+  func testDifferentMatchesGetDifferentBoards() {
+    XCTAssertNotEqual(invite.board(round: 1), DuelInvite(seed: invite.seed + 1).board(round: 1))
+  }
+
+  func testPlayStartsAGameOnTheGivenBoard() {
+    let board = invite.board(round: 1)
     let next = GameState.update(state: GameState(), action: .play(board), environment: AppEnvironment())
 
     XCTAssertEqual(next.state.gameBoard, board)
