@@ -1,5 +1,12 @@
 # Working on iosevka
 
+We are rapid prototyping:
+
+- No backwards compatibility.
+- Move fast and break things.
+- No app data is sacred.
+- Velocity and continuous improvement and iteration are paramount.
+
 iosevka is a SwiftUI iOS word game (`iosevka.xcodeproj`, scheme `iosevka`,
 bundle ID `zantonio.iosevka`).
 
