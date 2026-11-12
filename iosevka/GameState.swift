@@ -38,7 +38,10 @@ struct Submission: Equatable {
 }
 
 enum GameAction: Equatable {
+  /// Start a game on a newly generated board.
   case appear
+  /// Start a game on a given board, e.g. one from a duel invite.
+  case play(GameBoard)
   case selectLetter(position: BoardCoordinate)
   case submitWord
   case rotateBoard
@@ -83,18 +86,26 @@ struct GameState: ModelProtocol {
   ) -> Update<GameState> {
     print(action)
 
-    guard state.gameBoard != nil || (state.gameBoard == nil && (action == GameAction.appear)) else {
-      print("BOARD NOT INITIALISED! Can't handle \(action)")
-      return Update(state: state)
+    switch action {
+    case .appear, .play: break
+    default:
+      guard state.gameBoard != nil else {
+        print("BOARD NOT INITIALISED! Can't handle \(action)")
+        return Update(state: state)
+      }
     }
 
     switch action {
     case .appear:
+      let (board, _) = mkGameBoard(size: boardSize)
+      return update(state: state, action: .play(board), environment: environment)
+
+    case let .play(board):
       var draft = state
 
       draft.gameId = UUID()
 
-      let (board, boardWords) = mkGameBoard(size: boardSize)
+      let boardWords = Solver.shared.findAllWords(board: board)
       draft.gameBoard = board
 
       draft.stateOfTheGame = .playing

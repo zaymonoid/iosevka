@@ -12,11 +12,17 @@ class Solver {
   let trie: Trie
     
   init() {
-    guard let _ = Bundle.main.path(forResource: "dictionary", ofType: "txt") else {
+    #if SWIFT_PACKAGE
+    // AppLogic's tests run outside the app, so the dictionary is a package resource.
+    let bundle = Bundle.module
+    #else
+    let bundle = Bundle.main
+    #endif
+
+    guard let dictionaryURL = bundle.url(forResource: "dictionary", withExtension: "txt") else {
       fatalError("Couldn't find dictionary.txt in the bundle")
     }
     
-    let dictionaryURL = Bundle.main.url(forResource: "dictionary", withExtension: "txt")!
     let dictionary = try! String(contentsOf: dictionaryURL)
     trie = Trie()
     

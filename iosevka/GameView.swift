@@ -446,7 +446,11 @@ struct GameView: View {
     environment: AppEnvironment()
   )
 
+  /// The board to start on, e.g. a duel's; nil makes a new one.
+  var board: GameBoard?
   var dispatch: (AppAction) -> Void
+  /// Called with the final state each time a game ends.
+  var onGameOver: (GameState) -> Void = { _ in }
 
   var body: some View {
     Group {
@@ -460,7 +464,13 @@ struct GameView: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Theme.background.ignoresSafeArea())
     // Start the first game once; Play Again starts the next ones.
-    .onAppear { if store.state.gameBoard == nil { store.send(GameAction.appear) } }
+    .onAppear {
+      guard store.state.gameBoard == nil else { return }
+      store.send(board.map(GameAction.play) ?? .appear)
+    }
+    .onChange(of: store.state.stateOfTheGame) { _, stage in
+      if stage == .summary { onGameOver(store.state) }
+    }
   }
 }
 

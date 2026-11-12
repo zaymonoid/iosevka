@@ -26,6 +26,8 @@
 		C899EB8E2AD74A3C00378B32 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C899EB8D2AD74A3C00378B32 /* MenuView.swift */; };
 		C899EB902AD74E8800378B32 /* FadeIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = C899EB8F2AD74E8800378B32 /* FadeIn.swift */; };
 		A1B2C3D4E5F60718293A4B5C /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5D /* Haptics.swift */; };
+		DA1A00000000000000000001 /* Daily.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1A00000000000000000002 /* Daily.swift */; };
+		DA1A00000000000000000003 /* DailyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1A00000000000000000004 /* DailyTests.swift */; };
 		C8A64EBC2AD372D900F1617E /* dictionary.txt in Resources */ = {isa = PBXBuildFile; fileRef = C8A64EBB2AD372D900F1617E /* dictionary.txt */; };
 		C8BE94A82AF1FD9000C0303D /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BE94A72AF1FD9000C0303D /* Math.swift */; };
 		C8C7195B2AD8750700D1D6D9 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C7195A2AD8750700D1D6D9 /* GameView.swift */; };
@@ -72,6 +74,8 @@
 		C899EB8D2AD74A3C00378B32 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		C899EB8F2AD74E8800378B32 /* FadeIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeIn.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B5D /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		DA1A00000000000000000002 /* Daily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Daily.swift; sourceTree = "<group>"; };
+		DA1A00000000000000000004 /* DailyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTests.swift; sourceTree = "<group>"; };
 		C8A64EBB2AD372D900F1617E /* dictionary.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dictionary.txt; sourceTree = "<group>"; };
 		C8BE94A72AF1FD9000C0303D /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		C8C7195A2AD8750700D1D6D9 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -143,6 +147,7 @@
 				C8A1E0012F00000000000001 /* Theme.swift */,
 				C899EB8F2AD74E8800378B32 /* FadeIn.swift */,
 				A1B2C3D4E5F60718293A4B5D /* Haptics.swift */,
+				DA1A00000000000000000002 /* Daily.swift */,
 				C88ABDCB2AD9C5F700FF82C5 /* ReadOnlyBoardView.swift */,
 				C8E846BD2AE1F63A000621CD /* BoardGeneration.swift */,
 				C8D2CD132AE3384E0096D7F2 /* Rotation.swift */,
@@ -164,6 +169,7 @@
 			children = (
 				C8450D6C2ACF692B00A1E582 /* iosevkaTests.swift */,
 				C8450D8B2ACF6DF600A1E582 /* TrieTests.swift */,
+				DA1A00000000000000000004 /* DailyTests.swift */,
 			);
 			path = iosevkaTests;
 			sourceTree = "<group>";
@@ -330,6 +336,7 @@
 				C8450D5C2ACF692900A1E582 /* iosevkaApp.swift in Sources */,
 				C899EB902AD74E8800378B32 /* FadeIn.swift in Sources */,
 				A1B2C3D4E5F60718293A4B5C /* Haptics.swift in Sources */,
+				DA1A00000000000000000001 /* Daily.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +346,7 @@
 			files = (
 				C8450D6D2ACF692B00A1E582 /* iosevkaTests.swift in Sources */,
 				C8450D8C2ACF6DF600A1E582 /* TrieTests.swift in Sources */,
+				DA1A00000000000000000003 /* DailyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

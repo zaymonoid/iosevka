@@ -21,17 +21,20 @@ let package = Package(
       exclude: [
         "Assets.xcassets", "ContentView.swift", "FadeIn.swift", "GameBoardView.swift",
         "GameView.swift", "Haptics.swift", "MenuView.swift", "Preview Content", "ReadOnlyBoardView.swift",
-        "SwipeState.swift", "Theme.swift", "dictionary.txt", "iosevkaApp.swift",
+        "SwipeState.swift", "Theme.swift", "iosevkaApp.swift",
       ],
       sources: [
         "BoardGeneration.swift",
+        "Daily.swift",
         "GameBoard.swift",
         "GameState.swift",
         "Math.swift",
         "Rotation.swift",
         "Solver.swift",
         "Trie.swift",
-      ]
+      ],
+      // The solver loads it from Bundle.module when built as a package.
+      resources: [.copy("dictionary.txt")]
     ),
     .testTarget(name: "iosevkaTests", dependencies: ["iosevka"]),
   ],

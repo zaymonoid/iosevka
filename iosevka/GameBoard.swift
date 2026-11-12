@@ -37,7 +37,15 @@ let cumulativeFrequencies = letterFrequencies.map { letter, probability -> (Stri
 }
 
 func randomLetter() -> Character {
-  let randomNumber = Double.random(in: 0..<1)
+  var generator = SystemRandomNumberGenerator()
+  return randomLetter(using: &generator)
+}
+
+func randomLetter(using generator: inout some RandomNumberGenerator) -> Character {
+  // 53 random bits make a Double in 0..<1. Done by hand rather than with
+  // Double.random(in:using:) so a seeded generator gives the same letters on
+  // every Swift version.
+  let randomNumber = Double(generator.next() >> 11) * 0x1p-53
   for (letter, cumProb) in cumulativeFrequencies {
     if randomNumber < cumProb {
       return Character(letter)
@@ -67,9 +75,14 @@ struct GameBoard {
   public private(set) var letters: [[Character]]
 
   init(size: Int) {
+    var generator = SystemRandomNumberGenerator()
+    self.init(size: size, using: &generator)
+  }
+
+  init(size: Int, using generator: inout some RandomNumberGenerator) {
     self.size = size
     self.letters = (0..<size).map { _ in
-      (0..<size).map { _ in randomLetter() }
+      (0..<size).map { _ in randomLetter(using: &generator) }
     }
   }
 
