@@ -4,4 +4,4 @@ sessionDefaults:
   scheme: iosevka
   configuration: Debug
   simulatorName: iPhone 17 Pro
-  bundleId: zantonio.iosevka
+  bundleId: zaymonoid.iosevka

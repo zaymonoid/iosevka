@@ -8,7 +8,7 @@ We are rapid prototyping:
 - Velocity and continuous improvement and iteration are paramount.
 
 iosevka is a SwiftUI iOS word game (`iosevka.xcodeproj`, scheme `iosevka`,
-bundle ID `zantonio.iosevka`).
+bundle ID `zaymonoid.iosevka`).
 
 ## Tests
 
