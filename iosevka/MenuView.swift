@@ -33,7 +33,7 @@ struct MenuView: View {
       .accessibilityLabel("Iosevka")
       .accessibilityAddTraits(.isHeader)
 
-      Text("Find words. Beat the clock.")
+      Text("There's always one more word.")
         .font(.system(.title3, design: .rounded).weight(.medium))
         .foregroundStyle(Theme.secondaryInk)
         .padding(.top, 20)
