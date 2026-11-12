@@ -1,6 +1,23 @@
-iosevka.xcodeproj/xcuserdata
-iosevka.xcodeproj/xcuserdata
-.kata.local.toml
+# macOS
+.DS_Store
+
+# Xcode per-user state
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+
+# Xcode build output
+DerivedData/
+build/
+*.xcresult
+*.ipa
+*.dSYM
+*.dSYM.zip
 
 # SwiftPM (AppLogic)
 .build/
+.swiftpm/
+
+# kata
+.kata.local.toml
